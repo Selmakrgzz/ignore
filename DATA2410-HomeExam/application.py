@@ -62,6 +62,8 @@ def main ():
     parser.add_argument('-i', '--serverIP', help='Enter the server IP')
     parser.add_argument('-p', '--serverPort', type=int, help='Enter the server port number')
     parser.add_argument('-w', '--window', type=int, default=3, help='Sliding window size')
+    parser.add_argument('-d', '--drop', nargs='?', default=0, help='Enter wanted drops')
+
 
     args = parser.parse_args()
 
@@ -71,7 +73,7 @@ def main ():
     if args.server:
         #If the argumentline get's through the check then we can connect
         if argumentlineCheck('server', args.serverIP, args.serverPort):
-            serverMain(args.serverIP, args.serverPort)
+            serverMain(args.serverIP, args.serverPort, args.drop)
         else:
             print('Couldnt connect to server due to missing/wrong arguments')
     elif args.client:

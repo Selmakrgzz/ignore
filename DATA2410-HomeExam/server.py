@@ -1,6 +1,7 @@
 import socket
 import struct
 import sys
+import random
 import time
 from datetime import datetime
 
@@ -52,7 +53,7 @@ def parse_packet(packet):
     return seq_num, ack_num, flags, data
     
 
-def main(ip, port):
+def main(ip, port, discard):
     #Defining the server socket and address
     server_address = (ip, port)
 
@@ -105,6 +106,10 @@ def main(ip, port):
                 #We'll continue again from where we left
                 continue
 
+            if discard and random.random() < 0.1:  # 10% chance to drop the packet
+                print("Packet dropped")
+                continue
+
             #If flags equals a ACK flag and data is emty
             if flags & ACK and not data:
                 #Handle ACK packet for connection establishment
@@ -145,6 +150,7 @@ def main(ip, port):
             else:
                 #Handling the out-of-order data packet
                 print("{} -- packet {} received out of order, expected {}".format(current_time, client_seq_num, expected_seq_num))
+
 
     finally:
         #Calculate and display throughput if data was received
