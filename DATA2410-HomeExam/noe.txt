@@ -1,0 +1,38 @@
+     from mininet.net import Mininet
+     from mininet.node import Node, OVSKernelSwitch, Controller
+     from mininet.cli import CLI
+     from mininet.log import setLogLevel, info
+
+     def simpleTopo():
+         net = Mininet(controller=Controller, switch=OVSKernelSwitch)
+
+         # Legg til noder
+         client = net.addHost('client')
+         server = net.addHost('server')
+         router = net.addHost('r')
+
+         # Legg til koblinger
+         net.addLink(client, router)
+         net.addLink(router, server)
+
+         # Konfigurer IP-adresser
+         client.setIP('10.0.0.1/24')
+         server.setIP('10.0.0.2/24')
+
+         # Start nettverket
+         net.start()
+
+         # Legg til ruting
+         client.cmd('route add default gw 10.0.0.100')
+         server.cmd('route add default gw 10.0.0.100')
+         router.cmd('echo 1 > /proc/sys/net/ipv4/ip_forward')
+
+         # Kjør CLI
+         CLI(net)
+
+         # Stopp nettverket
+         net.stop()
+
+     if __name__ == '__main__':
+         setLogLevel('info')
+         simpleTopo()
