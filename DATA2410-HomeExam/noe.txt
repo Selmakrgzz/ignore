@@ -27,9 +27,13 @@ topo = NetworkTopo()
 net = Mininet(topo=topo, link=TCLink)
 net.start()
 
-# Configure RTT of 200ms (100ms each way)
-net['r2'].cmd("tc qdisc add dev r2-eth0 root netem delay 100ms")
-net['r2'].cmd("tc qdisc add dev r2-eth1 root netem delay 100ms")
+# Configure packet loss of 2% and delay of 100ms
+net['r2'].cmd("tc qdisc add dev r2-eth0 root netem delay 100ms loss 2%")
+net['r2'].cmd("tc qdisc add dev r2-eth1 root netem delay 100ms loss 2%")
+
+# Uncomment the following lines to configure packet loss of 5% and delay of 100ms
+# net['r2'].cmd("tc qdisc add dev r2-eth0 root netem delay 100ms loss 5%")
+# net['r2'].cmd("tc qdisc add dev r2-eth1 root netem delay 100ms loss 5%")
 
 # Setup IP routes
 net["h1"].cmd("ip route add 10.0.1.2 via 10.0.0.2 dev h1-eth0")
